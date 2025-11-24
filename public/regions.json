@@ -1,0 +1,377 @@
+[
+  {
+    "id": "region-lohagora",
+    "name": "লোহাগাড়া",
+    "type": "region",
+    "hasUnions": true,
+    "unions": [
+      {
+        "id": "union-borohatia",
+        "name": "বড়হাতিয়া",
+        "unionResponsible": [
+          { "id": "p-ehsanul", "name": "এহসানুল হক", "phone": "01614282113" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-amirabad",
+        "name": "আমিরাবাদ",
+        "unionResponsible": [
+          { "id": "p-mizanur", "name": "মিজানুর রহমান", "phone": "01812377877" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-podua",
+        "name": "পদুয়া",
+        "unionResponsible": [
+          {
+            "id": "p-zakiriya",
+            "name": "মূ. জাকিরিয়া",
+            "phone": "01889182378"
+          }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-kalaujan",
+        "name": "কলাউজান",
+        "unionResponsible": [
+          { "id": "p-kofil", "name": "কফিল উদ্দিন", "phone": "01829928733" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-choramba",
+        "name": "চরম্বা",
+        "unionResponsible": [
+          { "id": "p-nur", "name": "নুর মোহাম্মদ", "phone": "01857807902" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-lohagora",
+        "name": "লোহাগাড়া",
+        "unionResponsible": [
+          { "id": "p-foysal", "name": "ফয়সাল", "phone": "01829683000" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-putibila",
+        "name": "পুটিবিলা",
+        "unionResponsible": [
+          { "id": "p-sohel", "name": "সোহেল উদ্দিন", "phone": "01883338000" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-chunti",
+        "name": "চুনতি",
+        "unionResponsible": [
+          {
+            "id": "p-junaidul",
+            "name": "মো. জুনাইদুল ইসলাম",
+            "phone": "01820272419"
+          }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-adhungor",
+        "name": "আধুনগর",
+        "unionResponsible": [
+          { "id": "p-ismail", "name": "মো. ইসমাইল", "phone": "01821128694" }
+        ],
+        "wards": []
+      }
+    ]
+  },
+  {
+    "id": "region-satkania",
+    "name": "সাতকানিয়া",
+    "type": "region",
+    "hasUnions": true,
+    "unions": [
+      {
+        "id": "union-charati",
+        "name": "চরতী",
+        "unionResponsible": [
+          { "id": "p-kaysar", "name": "কায়ছার হামিদ", "phone": "01645166185" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-nalua",
+        "name": "নলুয়া",
+        "unionResponsible": [
+          { "id": "p-omar", "name": "ওমর ফারুক", "phone": "01875526409" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-amilaich",
+        "name": "আমিলাইচ",
+        "unionResponsible": [
+          { "id": "p-naimuddin", "name": "নাইমউদ্দিন", "phone": "01866340500" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-kanchana",
+        "name": "কাঞ্চনা",
+        "unionResponsible": [
+          {
+            "id": "p-zubair",
+            "name": "যুবাইর বিন জিহাদি",
+            "phone": "01882609194"
+          }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-eochia",
+        "name": "এওচিয়া",
+        "unionResponsible": [
+          {
+            "id": "p-sohel-eochia",
+            "name": "মু. সোহেল",
+            "phone": "01831377616"
+          }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-p-dhemsha",
+        "name": "প.ঢেমশা",
+        "unionResponsible": [
+          { "id": "p-hannan", "name": "আব্দুল হান্নান", "phone": "01815115324" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-sonakania",
+        "name": "সোনাকানিয়া",
+        "unionResponsible": [
+          { "id": "p-zahidul", "name": "জাহিদুল ইসলাম", "phone": "01854588786" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-satkania",
+        "name": "সাতকানিয়া",
+        "unionResponsible": [
+          { "id": "p-riduwan", "name": "মু. রিদুয়ান", "phone": "01813254506" },
+          { "id": "p-nurul", "name": "শেখ নূরুল আপান", "phone": "01825288883" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-madarsha",
+        "name": "মাদার্শা",
+        "unionResponsible": [
+          { "id": "p-tarikul", "name": "তরিকুল ইসলাম", "phone": "" }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-chdaha",
+        "name": "ছদাহা",
+        "unionResponsible": [
+          {
+            "id": "p-wahidur",
+            "name": "ওয়াহিদুর রহমান",
+            "phone": "01624478944"
+          }
+        ],
+        "wards": []
+      },
+      {
+        "id": "union-dhemsha",
+        "name": "ঢেমশা",
+        "unionResponsible": [
+          {
+            "id": "d-helal",
+            "name": "মো. হেলাল উদ্দিন",
+            "phone": "01300015089"
+          }
+        ],
+        "wards": [
+          {
+            "id": "ward-dhemsha-1",
+            "name": "Ward 1",
+            "persons": [
+              {
+                "id": "d-helal",
+                "name": "মো. হেলাল উদ্দিন",
+                "phone": "01300015089"
+              }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-2",
+            "name": "Ward 2",
+            "persons": [
+              {
+                "id": "d-saiful",
+                "name": "সাইফুল ইসলাম",
+                "phone": "01851438752"
+              }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-3",
+            "name": "Ward 3",
+            "persons": [
+              {
+                "id": "d-nezam",
+                "name": "নেজাম উদ্দিন",
+                "phone": "01783699390"
+              }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-4",
+            "name": "Ward 4",
+            "persons": [
+              { "id": "d-jabed", "name": "জাবেদ", "phone": "01858241663" }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-5",
+            "name": "Ward 5",
+            "persons": [
+              { "id": "d-ehesan", "name": "এহেসান", "phone": "01777487979" }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-6",
+            "name": "Ward 6",
+            "persons": [
+              { "id": "d-hasan", "name": "হাসান", "phone": "01851362961" }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-7",
+            "name": "Ward 7",
+            "persons": [
+              { "id": "d-anwar", "name": "আনওয়ার", "phone": "01603095222" }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-8",
+            "name": "Ward 8",
+            "persons": [
+              {
+                "id": "d-rezaullah",
+                "name": "রেজাউল্লাহ",
+                "phone": "01618897770"
+              }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-9",
+            "name": "Ward 9",
+            "persons": [
+              { "id": "d-sajjad", "name": "সাজ্জাদ", "phone": "01886159859" }
+            ]
+          },
+          {
+            "id": "ward-dhemsha-10",
+            "name": "Ward 10",
+            "persons": [
+              { "id": "d-junayed", "name": "জুনায়েদ", "phone": "01831979616" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-satkania-pouroshova",
+    "name": "সাতকানিয়া পৌরসভা",
+    "type": "pouroshova",
+    "hasUnions": false,
+    "wards": [
+      {
+        "id": "p-ward-1",
+        "name": "Ward 1",
+        "persons": [
+          { "id": "p-hamsal", "name": "হামসালউদ্দিন", "phone": "01812755679" }
+        ]
+      },
+      {
+        "id": "p-ward-2",
+        "name": "Ward 2",
+        "persons": [
+          { "id": "p-rafiq", "name": "মু. রফিক", "phone": "01764466610" }
+        ]
+      },
+      {
+        "id": "p-ward-3",
+        "name": "Ward 3",
+        "persons": [
+          {
+            "id": "p-rubel",
+            "name": "ছায়েদ হোসেন রুবেল",
+            "phone": "01881020009"
+          }
+        ]
+      },
+      {
+        "id": "p-ward-4",
+        "name": "Ward 4",
+        "persons": [
+          {
+            "id": "p-delowar",
+            "name": "দেলোয়ার হোসেন",
+            "phone": "01715741399"
+          }
+        ]
+      },
+      {
+        "id": "p-ward-5",
+        "name": "Ward 5",
+        "persons": [
+          { "id": "p-masud", "name": "আল মাসুদ রানা", "phone": "01811679541" }
+        ]
+      },
+      {
+        "id": "p-ward-6",
+        "name": "Ward 6",
+        "persons": [
+          { "id": "p-kabil", "name": "মু. কাবিল হোসেন", "phone": "01811563735" }
+        ]
+      },
+      {
+        "id": "p-ward-7",
+        "name": "Ward 7",
+        "persons": [
+          { "id": "p-anisul", "name": "আনিসুল ইসলাম", "phone": "01853334001" }
+        ]
+      },
+      {
+        "id": "p-ward-8",
+        "name": "Ward 8",
+        "persons": [
+          {
+            "id": "p-anisul-mostfa",
+            "name": "আনিসুল মোস্তফা",
+            "phone": "01765435628"
+          }
+        ]
+      },
+      {
+        "id": "p-ward-9",
+        "name": "Ward 9",
+        "persons": [
+          {
+            "id": "p-shahajahan",
+            "name": "মোহাম্মদ শাহাজাহান",
+            "phone": "01919176571"
+          }
+        ]
+      }
+    ]
+  }
+]
