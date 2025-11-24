@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import RegionCard from "./components/RegionCard";
-import ModalForm from "./components/ModalForm";
-import FilterBar from "./components/FilterBar";
+import React, { useState, useEffect, useRef } from 'react';
+import RegionCard from './components/RegionCard';
+import ModalForm from './components/ModalForm';
+import FilterBar from './components/FilterBar';
+import DownloadModal from './components/DownloadModal';
 import {
   loadData,
   saveData,
   resetToInitial,
   subscribeToData,
-} from "./utils/storage";
-import { generatePersonId, generateWardId } from "./utils/ids";
+} from './utils/storage';
+import { generatePersonId, generateWardId } from './utils/ids';
 
 function App() {
   const [regions, setRegions] = useState([]);
@@ -20,17 +21,19 @@ function App() {
   const lastSaveTimeRef = useRef(0);
   const saveTimeoutRef = useRef(null);
   const [filters, setFilters] = useState({
-    region: "",
-    union: "",
-    ward: "",
+    region: '',
+    union: '',
+    ward: '',
   });
   const [modal, setModal] = useState({
     isOpen: false,
-    type: "", // 'union', 'ward', 'person', 'union-person'
-    title: "",
+    type: '', // 'union', 'ward', 'person', 'union-person'
+    title: '',
     initialData: null,
     context: null, // Additional context for operations
   });
+
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
   // Set up optimized data loading with instant cache
   useEffect(() => {
@@ -41,7 +44,7 @@ function App() {
         // Step 1: Load cached data instantly for immediate UI
         loadData()
           .then((cachedData) => {
-            console.log("Initial data loaded:", cachedData.length, "regions");
+            console.log('Initial data loaded:', cachedData.length, 'regions');
             setRegions(cachedData);
             setFilteredRegions(cachedData);
             setLoading(false); // Show UI immediately with cached data
@@ -49,9 +52,9 @@ function App() {
             // Step 2: Set up real-time subscription for live updates
             const unsubscribe = subscribeToData((liveData) => {
               console.log(
-                "Real-time update received:",
+                'Real-time update received:',
                 liveData.length,
-                "regions"
+                'regions'
               );
 
               // Check if this update is from our recent save
@@ -60,7 +63,7 @@ function App() {
 
               if (isRecentSave) {
                 console.log(
-                  "Ignoring real-time update - recent local save detected"
+                  'Ignoring real-time update - recent local save detected'
                 );
                 setIsConnected(true);
                 return;
@@ -73,11 +76,11 @@ function App() {
                   JSON.stringify(liveData) !== JSON.stringify(currentRegions)
                 ) {
                   console.log(
-                    "Data changed from external source, updating state"
+                    'Data changed from external source, updating state'
                   );
                   return liveData;
                 } else {
-                  console.log("No changes detected, keeping current state");
+                  console.log('No changes detected, keeping current state');
                   return currentRegions;
                 }
               });
@@ -88,12 +91,12 @@ function App() {
             unsubscribeRef.current = unsubscribe;
           })
           .catch((error) => {
-            console.error("Failed to load initial data:", error);
+            console.error('Failed to load initial data:', error);
             setLoading(false);
             setIsConnected(false);
           });
       } catch (error) {
-        console.error("Failed to setup data loading:", error);
+        console.error('Failed to setup data loading:', error);
         setLoading(false);
         setIsConnected(false);
       }
@@ -182,13 +185,13 @@ function App() {
 
       // Debounce the save operation
       saveTimeoutRef.current = setTimeout(async () => {
-        console.log("Saving data to Firebase...");
+        console.log('Saving data to Firebase...');
         lastSaveTimeRef.current = Date.now(); // Record save time
         try {
           await saveData(regions);
-          console.log("Data saved successfully");
+          console.log('Data saved successfully');
         } catch (error) {
-          console.error("Failed to save data:", error);
+          console.error('Failed to save data:', error);
         } finally {
           setIsSaving(false); // Hide saving indicator
         }
@@ -218,8 +221,8 @@ function App() {
   const closeModal = () => {
     setModal({
       isOpen: false,
-      type: "",
-      title: "",
+      type: '',
+      title: '',
       initialData: null,
       context: null,
     });
@@ -238,7 +241,7 @@ function App() {
 
   // Union Operations
   const handleEditUnion = (union) => {
-    openModal("union", "ইউনিয়ন নাম সম্পাদনা করুন", union, {
+    openModal('union', 'ইউনিয়ন নাম সম্পাদনা করুন', union, {
       unionId: union.id,
     });
   };
@@ -259,11 +262,11 @@ function App() {
   // Ward Operations
   const handleAddWard = (parentId) => {
     // parentId can be unionId or regionId (for pouroshova)
-    openModal("ward", "নতুন ওয়ার্ড যোগ করুন", null, { parentId });
+    openModal('ward', 'নতুন ওয়ার্ড যোগ করুন', null, { parentId });
   };
 
   const handleEditWard = (ward, parentId) => {
-    openModal("ward", "ওয়ার্ড সম্পাদনা করুন", ward, {
+    openModal('ward', 'ওয়ার্ড সম্পাদনা করুন', ward, {
       wardId: ward.id,
       parentId: parentId,
     });
@@ -360,13 +363,13 @@ function App() {
 
   // Union Person Operations
   const handleAddUnionPerson = (unionId) => {
-    openModal("union-person", "ইউনিয়ন দায়িত্বশীল যোগ করুন", null, {
+    openModal('union-person', 'ইউনিয়ন দায়িত্বশীল যোগ করুন', null, {
       unionId,
     });
   };
 
   const handleEditUnionPerson = (person, unionId) => {
-    openModal("union-person", "ইউনিয়ন দায়িত্বশীল সম্পাদনা করুন", person, {
+    openModal('union-person', 'ইউনিয়ন দায়িত্বশীল সম্পাদনা করুন', person, {
       personId: person.id,
       unionId: unionId,
     });
@@ -432,14 +435,14 @@ function App() {
 
   // Ward Person Operations
   const handleAddWardPerson = (parentId, wardId) => {
-    openModal("person", "ওয়ার্ড দায়িত্বশীল যোগ করুন", null, {
+    openModal('person', 'ওয়ার্ড দায়িত্বশীল যোগ করুন', null, {
       parentId,
       wardId,
     });
   };
 
   const handleEditWardPerson = (person, parentId, wardId) => {
-    openModal("person", "ওয়ার্ড দায়িত্বশীল সম্পাদনা করুন", person, {
+    openModal('person', 'ওয়ার্ড দায়িত্বশীল সম্পাদনা করুন', person, {
       personId: person.id,
       parentId: parentId,
       wardId: wardId,
@@ -575,20 +578,20 @@ function App() {
   // Handle modal form submission
   const handleModalSubmit = (formData) => {
     switch (modal.type) {
-      case "union":
+      case 'union':
         handleSubmitUnion(formData);
         break;
-      case "ward":
+      case 'ward':
         handleSubmitWard(formData);
         break;
-      case "union-person":
+      case 'union-person':
         handleSubmitUnionPerson(formData);
         break;
-      case "person":
+      case 'person':
         handleSubmitWardPerson(formData);
         break;
       default:
-        console.warn("Unknown modal type:", modal.type);
+        console.warn('Unknown modal type:', modal.type);
     }
   };
 
@@ -596,60 +599,60 @@ function App() {
   const handleResetData = async () => {
     if (
       window.confirm(
-        "আপনি কি নিশ্চিত যে সব তথ্য মূল অবস্থায় ফিরিয়ে নিতে চান?"
+        'আপনি কি নিশ্চিত যে সব তথ্য মূল অবস্থায় ফিরিয়ে নিতে চান?'
       )
     ) {
       try {
         const initialData = await resetToInitial();
         setRegions(initialData);
-        setFilters({ region: "", union: "", ward: "" });
+        setFilters({ region: '', union: '', ward: '' });
       } catch (error) {
-        console.error("Failed to reset data:", error);
+        console.error('Failed to reset data:', error);
       }
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">ডেটা লোড হচ্ছে...</p>
+      <div className='min-h-screen flex items-center justify-center'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
+          <p className='mt-4 text-gray-600'>ডেটা লোড হচ্ছে...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+      <div className='bg-white shadow-sm border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className='flex justify-between items-center py-4'>
+            <div className='flex items-center space-x-3'>
+              <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-3'>
+                <h1 className='text-xl sm:text-2xl font-bold text-gray-900'>
                   নির্বাচনী ক্যাম্প ব্যবস্থাপনা সিস্টেম
                 </h1>
-                <span className="text-sm text-gray-600 mt-1 sm:mt-0">
+                <span className='text-sm text-gray-600 mt-1 sm:mt-0'>
                   (Managed by - Engr. MD. Farman Sikder)
                 </span>
               </div>
               {/* Firebase Connection Status */}
-              <div className="flex items-center space-x-2">
+              <div className='flex items-center space-x-2'>
                 {isSaving ? (
-                  <div className="flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-spin"></div>
+                  <div className='flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full'>
+                    <div className='w-2 h-2 bg-blue-500 rounded-full animate-spin'></div>
                     <span>Saving...</span>
                   </div>
                 ) : isConnected ? (
-                  <div className="flex items-center space-x-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className='flex items-center space-x-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full'>
+                    <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></div>
                     <span>Real-time Updates</span>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  <div className='flex items-center space-x-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full'>
+                    <div className='w-2 h-2 bg-yellow-500 rounded-full'></div>
                     <span>Local</span>
                   </div>
                 )}
@@ -675,17 +678,18 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
         {/* Filter Bar */}
         <FilterBar
           regions={regions}
           onFilterChange={handleFilterChange}
+          onOpenDownload={() => setIsDownloadOpen(true)}
           activeFilters={filters}
         />
 
         {/* Results */}
         {filteredRegions.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
             {filteredRegions.map((region) => (
               <RegionCard
                 key={region.id}
@@ -706,16 +710,16 @@ function App() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-500">
+          <div className='text-center py-12'>
+            <p className='text-gray-500'>
               {filters.region || filters.union || filters.ward
-                ? "নির্বাচিত ফিল্টার অনুযায়ী কোন তথ্য পাওয়া যায়নি।"
-                : "কোন তথ্য পাওয়া যায়নি।"}
+                ? 'নির্বাচিত ফিল্টার অনুযায়ী কোন তথ্য পাওয়া যায়নি।'
+                : 'কোন তথ্য পাওয়া যায়নি।'}
             </p>
             {(filters.region || filters.union || filters.ward) && (
               <button
-                onClick={() => setFilters({ region: "", union: "", ward: "" })}
-                className="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 underline"
+                onClick={() => setFilters({ region: '', union: '', ward: '' })}
+                className='mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 underline'
               >
                 সব ফিল্টার সাফ করুন
               </button>
@@ -723,6 +727,15 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* Download Modal */}
+      <DownloadModal
+        isOpen={isDownloadOpen}
+        onClose={() => setIsDownloadOpen(false)}
+        allData={regions}
+        filteredData={filteredRegions}
+        currentFilters={filters}
+      />
 
       {/* Modal */}
       <ModalForm

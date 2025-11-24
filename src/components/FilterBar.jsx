@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 // FilterBar component for filtering by Region, Union, and Ward
-const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
+const FilterBar = ({
+  regions,
+  onFilterChange,
+  activeFilters,
+  onOpenDownload,
+}) => {
   const [localFilters, setLocalFilters] = useState({
-    region: "",
-    union: "",
-    ward: "",
+    region: '',
+    union: '',
+    ward: '',
   });
 
   // Get available unions based on selected region
@@ -56,11 +61,11 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
   const handleFilterChange = (filterType, value) => {
     let newFilters = { ...localFilters };
 
-    if (filterType === "region") {
-      newFilters = { region: value, union: "", ward: "" };
-    } else if (filterType === "union") {
-      newFilters = { ...localFilters, union: value, ward: "" };
-    } else if (filterType === "ward") {
+    if (filterType === 'region') {
+      newFilters = { region: value, union: '', ward: '' };
+    } else if (filterType === 'union') {
+      newFilters = { ...localFilters, union: value, ward: '' };
+    } else if (filterType === 'ward') {
       newFilters = { ...localFilters, ward: value };
     }
 
@@ -70,7 +75,7 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
 
   // Clear all filters
   const clearFilters = () => {
-    const emptyFilters = { region: "", union: "", ward: "" };
+    const emptyFilters = { region: '', union: '', ward: '' };
     setLocalFilters(emptyFilters);
     onFilterChange(emptyFilters);
   };
@@ -128,20 +133,29 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
   const filterStats = getFilterStats();
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-4 mb-6">
+    <div className='bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-4 mb-6'>
+      <div className='flex justify-end mb-2'>
+        <button
+          onClick={() => onOpenDownload && onOpenDownload()}
+          className='px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors'
+          title='ডাউনলোড'
+        >
+          ডাউনলোড
+        </button>
+      </div>
       {/* Filter Controls */}
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className='flex flex-wrap gap-4 mb-4'>
         {/* Region Filter */}
-        <div className="flex-1 min-w-48">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className='flex-1 min-w-48'>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>
             অঞ্চল নির্বাচন করুন
           </label>
           <select
             value={localFilters.region}
-            onChange={(e) => handleFilterChange("region", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            onChange={(e) => handleFilterChange('region', e.target.value)}
+            className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm'
           >
-            <option value="">সব অঞ্চল</option>
+            <option value=''>সব অঞ্চল</option>
             {regions.map((region) => (
               <option key={region.id} value={region.id}>
                 {region.name}
@@ -152,16 +166,16 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
 
         {/* Union Filter */}
         {localFilters.region && availableUnions.length > 0 && (
-          <div className="flex-1 min-w-48">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className='flex-1 min-w-48'>
+            <label className='block text-sm font-medium text-gray-700 mb-1'>
               ইউনিয়ন নির্বাচন করুন
             </label>
             <select
               value={localFilters.union}
-              onChange={(e) => handleFilterChange("union", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              onChange={(e) => handleFilterChange('union', e.target.value)}
+              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm'
             >
-              <option value="">সব ইউনিয়ন</option>
+              <option value=''>সব ইউনিয়ন</option>
               {availableUnions.map((union) => (
                 <option key={union.id} value={union.id}>
                   {union.name}
@@ -173,19 +187,19 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
 
         {/* Ward Filter */}
         {localFilters.region && availableWards.length > 0 && (
-          <div className="flex-1 min-w-48">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className='flex-1 min-w-48'>
+            <label className='block text-sm font-medium text-gray-700 mb-1'>
               ওয়ার্ড নির্বাচন করুন
             </label>
             <select
               value={localFilters.ward}
-              onChange={(e) => handleFilterChange("ward", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              onChange={(e) => handleFilterChange('ward', e.target.value)}
+              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm'
             >
-              <option value="">সব ওয়ার্ড</option>
+              <option value=''>সব ওয়ার্ড</option>
               {availableWards.map((ward) => (
                 <option key={ward.id} value={ward.id}>
-                  {ward.name} {ward.unionName ? `(${ward.unionName})` : ""}
+                  {ward.name} {ward.unionName ? `(${ward.unionName})` : ''}
                 </option>
               ))}
             </select>
@@ -194,10 +208,10 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
 
         {/* Clear Button */}
         {(localFilters.region || localFilters.union || localFilters.ward) && (
-          <div className="flex items-end">
+          <div className='flex items-end'>
             <button
               onClick={clearFilters}
-              className="px-4 py-2 text-sm text-gray-700 bg-blue-100 border border-blue-300 rounded-md hover:bg-blue-200 transition-colors"
+              className='px-4 py-2 text-sm text-gray-700 bg-blue-100 border border-blue-300 rounded-md hover:bg-blue-200 transition-colors'
             >
               ফিল্টার সাফ করুন
             </button>
@@ -207,8 +221,8 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
 
       {/* Filter Stats */}
       {filterStats && (
-        <div className="border-t border-blue-200 pt-4">
-          <div className="flex flex-wrap gap-6 text-sm text-gray-600">
+        <div className='border-t border-blue-200 pt-4'>
+          <div className='flex flex-wrap gap-6 text-sm text-gray-600'>
             {filterStats.totalUnions > 0 && (
               <span>
                 ইউনিয়ন: <strong>{filterStats.totalUnions}</strong>
@@ -226,19 +240,19 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
 
       {/* Active Filters Display */}
       {(localFilters.region || localFilters.union || localFilters.ward) && (
-        <div className="border-t border-blue-200 pt-4 mt-4">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm text-gray-600 font-medium">
+        <div className='border-t border-blue-200 pt-4 mt-4'>
+          <div className='flex flex-wrap gap-2'>
+            <span className='text-sm text-gray-600 font-medium'>
               সক্রিয় ফিল্টার:
             </span>
 
             {localFilters.region && (
-              <span className="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+              <span className='inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full'>
                 {regions.find((r) => r.id === localFilters.region)?.name}
                 <button
-                  onClick={() => handleFilterChange("region", "")}
-                  className="ml-1 text-blue-600 hover:text-blue-800"
-                  title="ফিল্টার সরান"
+                  onClick={() => handleFilterChange('region', '')}
+                  className='ml-1 text-blue-600 hover:text-blue-800'
+                  title='ফিল্টার সরান'
                 >
                   ✕
                 </button>
@@ -246,12 +260,12 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
             )}
 
             {localFilters.union && (
-              <span className="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+              <span className='inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full'>
                 {availableUnions.find((u) => u.id === localFilters.union)?.name}
                 <button
-                  onClick={() => handleFilterChange("union", "")}
-                  className="ml-1 text-green-600 hover:text-green-800"
-                  title="ফিল্টার সরান"
+                  onClick={() => handleFilterChange('union', '')}
+                  className='ml-1 text-green-600 hover:text-green-800'
+                  title='ফিল্টার সরান'
                 >
                   ✕
                 </button>
@@ -259,12 +273,12 @@ const FilterBar = ({ regions, onFilterChange, activeFilters }) => {
             )}
 
             {localFilters.ward && (
-              <span className="inline-flex items-center px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">
+              <span className='inline-flex items-center px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full'>
                 {availableWards.find((w) => w.id === localFilters.ward)?.name}
                 <button
-                  onClick={() => handleFilterChange("ward", "")}
-                  className="ml-1 text-orange-600 hover:text-orange-800"
-                  title="ফিল্টার সরান"
+                  onClick={() => handleFilterChange('ward', '')}
+                  className='ml-1 text-orange-600 hover:text-orange-800'
+                  title='ফিল্টার সরান'
                 >
                   ✕
                 </button>
