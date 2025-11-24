@@ -98,30 +98,30 @@ async function loadDataFromLocalStorage() {
     }
 }
 
-// Save data to Firebase with localStorage backup
+// Save data to Firebase with localStorage backup (SIMPLIFIED)
 export async function saveData(data) {
     try {
         // Always save to localStorage as backup
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        console.log('Data saved to localStorage');
 
-        // Try to save to Firebase
-        const isFirebaseConnected = await checkFirebaseConnection();
-
-        if (isFirebaseConnected) {
+        // Try to save to Firebase directly (no connection check)
+        try {
             const firebaseSuccess = await saveFirebaseData(data);
             if (firebaseSuccess) {
-                console.log('Data saved to both Firebase and localStorage');
+                console.log('✅ Data saved to Firebase successfully');
                 return true;
             } else {
-                console.log('Firebase save failed, but localStorage backup successful');
+                console.log('⚠️ Firebase save failed, but localStorage backup successful');
                 return true;
             }
-        } else {
-            console.log('Firebase unavailable, data saved to localStorage only');
-            return true;
+        } catch (firebaseError) {
+            console.error('Firebase save error:', firebaseError);
+            console.log('📱 Data saved to localStorage only (Firebase unavailable)');
+            return true; // Still return true since localStorage save succeeded
         }
     } catch (error) {
-        console.error('Error saving data:', error);
+        console.error('Critical save error:', error);
         return false;
     }
 }

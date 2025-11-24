@@ -139,50 +139,86 @@ async function initializeFirebaseDataFast() {
     }
 }
 
-// Save data to Firebase (OPTIMIZED with cache invalidation)
+// Clean data to remove undefined values that Firebase can't handle
+function cleanDataForFirebase(data, path = '') {
+    if (Array.isArray(data)) {
+        return data.map((item, index) => cleanDataForFirebase(item, `${path}[${index}]`)).filter(item => item !== null);
+    } else if (data && typeof data === 'object') {
+        const cleaned = {};
+        for (const [key, value] of Object.entries(data)) {
+            if (value === undefined) {
+                console.warn(`🚨 Found undefined value at: ${path}.${key}`);
+            } else if (value !== null) {
+                cleaned[key] = cleanDataForFirebase(value, `${path}.${key}`);
+            }
+        }
+        return cleaned;
+    }
+    return data === undefined ? null : data;
+}
+
+// Save data to Firebase (OPTIMIZED with cache invalidation and data cleaning)
 export async function saveFirebaseData(regionsData) {
     try {
+        console.log('🔥 Starting Firebase save operation...', regionsData.length, 'regions');
+
+        // Clean data to remove undefined values
+        const cleanedData = cleanDataForFirebase(regionsData);
+        console.log('🧹 Data cleaned for Firebase:', cleanedData.length, 'regions');
+
         const docRef = doc(db, COLLECTION_NAME, DOCUMENT_ID);
 
         await updateDoc(docRef, {
-            regions: regionsData,
+            regions: cleanedData,
             lastUpdated: serverTimestamp(),
         });
 
         // Invalidate cache after successful save
-        firebaseCache = regionsData;
+        firebaseCache = cleanedData;
         cacheTimestamp = Date.now();
 
-        console.log('Data saved to Firebase successfully and cache updated');
+        console.log('✅ Data saved to Firebase successfully and cache updated');
         return true;
     } catch (error) {
+        console.log('⚠️ Update failed, trying to create document...', error.code);
+
         // If document doesn't exist, create it
-        if (error.code === 'not-found') {
+        if (error.code === 'not-found' || error.code === 'permission-denied') {
             try {
+                const cleanedData = cleanDataForFirebase(regionsData);
+                const docRef = doc(db, COLLECTION_NAME, DOCUMENT_ID);
                 await setDoc(docRef, {
-                    regions: regionsData,
+                    regions: cleanedData,
                     lastUpdated: serverTimestamp(),
                     version: '1.0'
                 });
 
                 // Update cache after successful creation
-                firebaseCache = regionsData;
+                firebaseCache = cleanedData;
                 cacheTimestamp = Date.now();
 
-                console.log('New Firebase document created and data saved');
+                console.log('✅ New Firebase document created and data saved');
                 return true;
             } catch (createError) {
-                console.error('Error creating Firebase document:', createError);
+                console.error('❌ Error creating Firebase document:', createError);
+                console.error('Create error details:', {
+                    code: createError.code,
+                    message: createError.message,
+                    stack: createError.stack
+                });
                 return false;
             }
         }
 
-        console.error('Error saving to Firebase:', error);
+        console.error('❌ Error saving to Firebase:', error);
+        console.error('Save error details:', {
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+        });
         return false;
     }
-}
-
-// Subscribe to real-time updates
+}// Subscribe to real-time updates
 export function subscribeToFirebaseData(callback) {
     const docRef = doc(db, COLLECTION_NAME, DOCUMENT_ID);
 

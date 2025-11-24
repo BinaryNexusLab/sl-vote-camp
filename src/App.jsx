@@ -15,6 +15,7 @@ function App() {
   const [filteredRegions, setFilteredRegions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const unsubscribeRef = useRef(null);
   const lastSaveTimeRef = useRef(0);
   const saveTimeoutRef = useRef(null);
@@ -36,13 +37,11 @@ function App() {
     const setupDataSubscription = () => {
       try {
         setLoading(true);
-        let currentData = []; // Track current data for comparison
 
         // Step 1: Load cached data instantly for immediate UI
         loadData()
           .then((cachedData) => {
             console.log("Initial data loaded:", cachedData.length, "regions");
-            currentData = cachedData; // Store reference
             setRegions(cachedData);
             setFilteredRegions(cachedData);
             setLoading(false); // Show UI immediately with cached data
@@ -57,7 +56,7 @@ function App() {
 
               // Check if this update is from our recent save
               const timeSinceLastSave = Date.now() - lastSaveTimeRef.current;
-              const isRecentSave = timeSinceLastSave < 2000; // 2 seconds
+              const isRecentSave = timeSinceLastSave < 3000; // 3 seconds
 
               if (isRecentSave) {
                 console.log(
@@ -67,17 +66,22 @@ function App() {
                 return;
               }
 
-              // Only update if data actually changed from current state
-              if (JSON.stringify(liveData) !== JSON.stringify(currentData)) {
-                console.log(
-                  "Data changed from external source, updating state"
-                );
-                currentData = liveData; // Update reference
-                setRegions(liveData);
-                setFilteredRegions(liveData);
-              } else {
-                console.log("No changes detected, keeping current state");
-              }
+              // Get current regions state by comparing with the regions state
+              setRegions((currentRegions) => {
+                // Only update if data actually changed from current state
+                if (
+                  JSON.stringify(liveData) !== JSON.stringify(currentRegions)
+                ) {
+                  console.log(
+                    "Data changed from external source, updating state"
+                  );
+                  return liveData;
+                } else {
+                  console.log("No changes detected, keeping current state");
+                  return currentRegions;
+                }
+              });
+
               setIsConnected(true);
             });
 
@@ -173,18 +177,29 @@ function App() {
         clearTimeout(saveTimeoutRef.current);
       }
 
+      // Show saving indicator
+      setIsSaving(true);
+
       // Debounce the save operation
-      saveTimeoutRef.current = setTimeout(() => {
+      saveTimeoutRef.current = setTimeout(async () => {
         console.log("Saving data to Firebase...");
         lastSaveTimeRef.current = Date.now(); // Record save time
-        saveData(regions);
-      }, 500); // 500ms debounce
+        try {
+          await saveData(regions);
+          console.log("Data saved successfully");
+        } catch (error) {
+          console.error("Failed to save data:", error);
+        } finally {
+          setIsSaving(false); // Hide saving indicator
+        }
+      }, 1000); // 1 second debounce - increased for better UX
     }
 
     // Cleanup timeout on component unmount
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
+        setIsSaving(false);
       }
     };
   }, [regions, loading]);
@@ -612,15 +627,25 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                নির্বাচনী ক্যাম্প ব্যবস্থাপনা সিস্টেম
-              </h1>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  নির্বাচনী ক্যাম্প ব্যবস্থাপনা সিস্টেম
+                </h1>
+                <span className="text-sm text-gray-600 mt-1 sm:mt-0">
+                  (Managed by - Engr. MD. Farman Sikder)
+                </span>
+              </div>
               {/* Firebase Connection Status */}
               <div className="flex items-center space-x-2">
-                {isConnected ? (
+                {isSaving ? (
+                  <div className="flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-spin"></div>
+                    <span>Saving...</span>
+                  </div>
+                ) : isConnected ? (
                   <div className="flex items-center space-x-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span>Real-time</span>
+                    <span>Real-time Updates</span>
                   </div>
                 ) : (
                   <div className="flex items-center space-x-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
