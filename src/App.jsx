@@ -25,6 +25,7 @@ function App() {
     union: '',
     ward: '',
   });
+  const [search, setSearch] = useState('');
   const [modal, setModal] = useState({
     isOpen: false,
     type: '', // 'union', 'ward', 'person', 'union-person'
@@ -113,7 +114,7 @@ function App() {
     };
   }, []);
 
-  // Apply filters whenever regions or filters change
+  // Apply filters and search whenever regions, filters, or search change
   useEffect(() => {
     if (!regions.length) return;
 
@@ -169,8 +170,87 @@ function App() {
       });
     }
 
+    // Apply search filter (name/number)
+    if (search.trim()) {
+      const query = search.trim().toLowerCase();
+      const match = (str) => str && str.toLowerCase().includes(query);
+
+      // Helper to filter persons array
+      const filterPersons = (persons) =>
+        (persons || []).filter(
+          (person) =>
+            match(person.name) || match(person.phone) || match(person.id)
+        );
+
+      filtered = filtered
+        .map((region) => {
+          // Region name/id match
+          const regionMatch = match(region.name) || match(region.id);
+
+          if (region.hasUnions) {
+            // Filter unions
+            const unions = (region.unions || [])
+              .map((union) => {
+                // Union name/id match
+                const unionMatch = match(union.name) || match(union.id);
+
+                // Filter unionResponsible
+                const unionResponsible = filterPersons(union.unionResponsible);
+
+                // Filter wards
+                const wards = (union.wards || [])
+                  .map((ward) => {
+                    // Ward name/id match
+                    const wardMatch = match(ward.name) || match(ward.id);
+                    // Filter persons
+                    const persons = filterPersons(ward.persons);
+                    // Show ward if name/id/person matches
+                    if (wardMatch || persons.length > 0) {
+                      return { ...ward, persons };
+                    }
+                    return null;
+                  })
+                  .filter(Boolean);
+
+                // Show union if name/id/person/ward matches
+                if (
+                  unionMatch ||
+                  unionResponsible.length > 0 ||
+                  wards.length > 0
+                ) {
+                  return { ...union, unionResponsible, wards };
+                }
+                return null;
+              })
+              .filter(Boolean);
+
+            if (regionMatch || unions.length > 0) {
+              return { ...region, unions };
+            }
+            return null;
+          } else {
+            // Pouroshova: filter wards
+            const wards = (region.wards || [])
+              .map((ward) => {
+                const wardMatch = match(ward.name) || match(ward.id);
+                const persons = filterPersons(ward.persons);
+                if (wardMatch || persons.length > 0) {
+                  return { ...ward, persons };
+                }
+                return null;
+              })
+              .filter(Boolean);
+            if (regionMatch || wards.length > 0) {
+              return { ...region, wards };
+            }
+            return null;
+          }
+        })
+        .filter(Boolean);
+    }
+
     setFilteredRegions(filtered);
-  }, [regions, filters]);
+  }, [regions, filters, search]);
 
   // Save data with debounce to prevent conflicts
   useEffect(() => {
@@ -679,6 +759,17 @@ function App() {
 
       {/* Main Content */}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
+        {/* Search Bar */}
+        <div className='mb-4'>
+          <input
+            type='text'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className='input-field text-sm w-full max-w-md border border-blue-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            placeholder='নাম বা ফোন নম্বর দিয়ে খুঁজুন...'
+            aria-label='Search by name or number'
+          />
+        </div>
         {/* Filter Bar */}
         <FilterBar
           regions={regions}
@@ -712,8 +803,8 @@ function App() {
         ) : (
           <div className='text-center py-12'>
             <p className='text-gray-500'>
-              {filters.region || filters.union || filters.ward
-                ? 'নির্বাচিত ফিল্টার অনুযায়ী কোন তথ্য পাওয়া যায়নি।'
+              {filters.region || filters.union || filters.ward || search
+                ? 'নির্বাচিত ফিল্টার বা সার্চ অনুযায়ী কোন তথ্য পাওয়া যায়নি।'
                 : 'কোন তথ্য পাওয়া যায়নি।'}
             </p>
             {(filters.region || filters.union || filters.ward) && (
@@ -722,6 +813,14 @@ function App() {
                 className='mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 underline'
               >
                 সব ফিল্টার সাফ করুন
+              </button>
+            )}
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className='mt-2 ml-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 underline'
+              >
+                সার্চ সাফ করুন
               </button>
             )}
           </div>
