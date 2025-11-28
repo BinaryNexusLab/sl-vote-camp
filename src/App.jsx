@@ -37,6 +37,7 @@ function App() {
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
   // Set up optimized data loading with instant cache
+  // new
   useEffect(() => {
     const setupDataSubscription = () => {
       try {
